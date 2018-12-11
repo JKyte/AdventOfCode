@@ -8,9 +8,9 @@ import java.util.Scanner;
 /**
  * Solution for https://adventofcode.com/2018/day/1
  * <p>
- * Day 1: Final frequency is +477.
+ * Part 1: Final frequency is +477.
  * <p>
- * Day 2: Found duplicate freq [390] in 137 cycles, iteration: 138573.
+ * Part 2: Found duplicate freq [390] in 137 cycles, iteration: 138573.
  */
 public class ChronalCalibration implements Runnable {
 
