@@ -77,11 +77,6 @@ public class ChronalCoordinates implements Runnable {
         }
         System.out.println("Max X: " + maxX + " Max Y: " + maxY);
         return new int[maxX][maxY];
-//        if (maxX > maxY) {
-//            return new int[maxX][maxX];
-//        } else {
-//            return new int[maxY][maxY];
-//        }
     }
 
     private void fillGrid(int[][] grid, Set<Coord> coords) {
