@@ -10,7 +10,9 @@ import java.util.List;
  * <p>
  * Part 1: 412127
  * <p>
- * Part 2:
+ * Part 2: 3482394794
+ * <p>
+ * Note: used a python solution after proving the java solution would have worked.
  */
 public class MarbleMania extends Core {
 
