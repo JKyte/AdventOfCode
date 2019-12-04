@@ -1,4 +1,4 @@
-package advent2018;
+package advent2018.day01;
 
 import java.io.File;
 import java.io.FileNotFoundException;

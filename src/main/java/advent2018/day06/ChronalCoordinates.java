@@ -1,4 +1,4 @@
-package advent2018;
+package advent2018.day06;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;

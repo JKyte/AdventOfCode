@@ -1,9 +1,6 @@
-import advent2018.ChronalCharge;
-import org.junit.Assert;
+import advent2018.day11.ChronalCharge;
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 public class ChronalChargeTest {
 

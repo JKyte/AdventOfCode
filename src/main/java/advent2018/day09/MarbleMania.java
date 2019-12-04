@@ -1,4 +1,4 @@
-package advent2018;
+package advent2018.day09;
 
 import core.Core;
 

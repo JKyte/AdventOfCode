@@ -1,4 +1,4 @@
-package advent2018;
+package advent2018.day10;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;

@@ -1,4 +1,4 @@
-package advent2018;
+package advent2018.day08;
 
 import com.google.common.base.Joiner;
 
