@@ -78,15 +78,6 @@ public class SubterraneanSustainability {
                         "#.#.. => #\n" +
                         "..#.# => .";
 
-//                "..### => #\n..... => .\n..#.. => .\n.###. => .\n" +
-//                "...## => #\n#.### => .\n#.#.# => #\n##..# => .\n##.## => #\n" +
-//                "#...# => .\n..##. => .\n##.#. => .\n...#. => .\n#..#. => #\n" +
-//                ".#### => #\n.#..# => #\n##... => #\n.##.# => .\n....# => .\n" +
-//                "#.... => .\n.#.#. => #\n.##.. => .\n###.# => #\n####. => .\n" +
-//                "##### => #\n#.##. => #\n.#... => #\n.#.## => #\n###.. => #\n" +
-//                "#..## => .\n#.#.. => #\n..#.# => .";
-
-
         System.out.println("Initial state: " + initialState.length());
         SubterraneanSustainability ss = new SubterraneanSustainability(initialState, rules, 200);
         String endState = ss.applyRules();
@@ -94,7 +85,6 @@ public class SubterraneanSustainability {
         System.out.println("Expected       : .#....##....#####...#######....#.#..##.");
 
         System.out.println("Pots: " + ss.countPots(endState));
-//        System.out.println("Pots: " + ss.countPots(".#....##....#####...#######....#.#..##."));
     }
 
     private String input;
@@ -166,8 +156,14 @@ public class SubterraneanSustainability {
 //                System.out.println("State at gen " + ii + ": " + expected[ii - 1] + "\n");
 //                System.exit(0);
 //            }
-        }
+            if (ii < 10) {
+                System.out.println("State at gen " + ii + " : " + state);
+            } else {
+                System.out.println("State at gen " + ii + ": " + state);
+            }
 
+
+        }
         return state;
     }
 
@@ -192,8 +188,6 @@ public class SubterraneanSustainability {
 //        System.out.println("End State: " + endState);
         return endState;
     }
-    //16: ...#..#...#.#...##...#...#.#..##..##...
-    //16: .#.#..#...#.#...##...#...#.#..##..##...
 
     public Rule parseIntoRule(String input) {
 //        System.out.println("rule input: " + input);
@@ -212,7 +206,6 @@ public class SubterraneanSustainability {
         }
         return count;
     }
-
 
     private class Rule {
         public String template;
