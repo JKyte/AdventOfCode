@@ -2,14 +2,18 @@ package advent2019;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class IntcodeComputer implements Runnable {
 
     private int[] register;
 
+    private ArrayList<Integer> outputs;
+
     public IntcodeComputer(int[] register) {
         this.register = register;
+        this.outputs = new ArrayList<>();
     }
 
     @Override
@@ -65,10 +69,12 @@ public class IntcodeComputer implements Runnable {
                     //  OPCODE 4 -- OUTPUT, 1 arg
                     System.out.println("OUTPUT -- " + register[index] + ", " + register[index + 1]);
                     int outValue = register[register[index + 1]];
+                    outputs.add(outValue);
+
 //                    int outValue = parseArgument(index, 1, modes);
                     System.out.println("Output: " + outValue);
                     if (isImmediateMode(1, modes)) {
-                        System.out.println("Output (immediate): " );
+                        System.out.println("Output (immediate): ");
                         System.exit(0);
                     }
 //                    else {
@@ -150,7 +156,7 @@ public class IntcodeComputer implements Runnable {
 
     public int parseArgument(int opcodeIndex, int argIndex, int modes) {
         if (isImmediateMode(argIndex, modes)) {
-            //  If mode is ONE then execute in IMMEDIATE MODE (value of arg is value)
+            //  If mode is ONE then execute in IMMEDIATE MODE (value of arg_value)
             return register[opcodeIndex + argIndex];
         } else {
             //  If mode is ZERO then execute in POSITION MODE (value is register[arg_value]
@@ -193,6 +199,10 @@ public class IntcodeComputer implements Runnable {
 
     public int valueAtIndex(int index) {
         return register[index];
+    }
+
+    public ArrayList<Integer> getOutputs() {
+        return outputs;
     }
 
 }

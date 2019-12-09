@@ -86,6 +86,7 @@ public class IntcodeComputerTest {
         testInputsAndOutputs(input, inputs, outputs);
     }
 
+    //  Multiply 33 * 3
     @Test
     public void testAdvent2019Day05Example2() {
         int[] input = {1002, 4, 3, 4, 33};
@@ -98,13 +99,18 @@ public class IntcodeComputerTest {
      * Using position mode, consider whether the input is equal to 8;
      * output 1 (if it is) or 0 (if it is not).
      */
-    @Ignore
     @Test
     public void testAdvent2019Day05Example3() {
         int[] input = {3, 9, 8, 9, 10, 9, 4, 9, 99, -1, 8};
         IntcodeComputer computer = new IntcodeComputer(input);
-        computer.run();
-        assertEquals(99, computer.valueAtIndex(4));
+
+        //  Input not equal to 8 outputs 0
+        testWithInput(computer, "1");
+        assertEquals(0, computer.getOutputs().get(0).intValue());
+
+        computer = new IntcodeComputer(input);
+        testWithInput(computer, "8");
+        assertEquals(1, computer.getOutputs().get(0).intValue());
     }
 
     /**
@@ -202,5 +208,21 @@ public class IntcodeComputerTest {
             System.setIn(originalSystemIn);
             System.setOut(originalSystemOut);
         }
+    }
+
+    private IntcodeComputer testWithInput(IntcodeComputer computer, String input) {
+        //  Set aside original input stream
+        InputStream originalSystemIn = System.in;
+        try {
+            //  Setup input stream to feed program input
+            InputStream testInput = new ByteArrayInputStream(input.getBytes());
+            System.setIn(testInput);
+
+            computer.run();
+
+        } finally {
+            System.setIn(originalSystemIn);
+        }
+        return computer;
     }
 }
