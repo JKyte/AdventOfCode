@@ -117,39 +117,55 @@ public class IntcodeComputerTest {
      * Using position mode, consider whether the input is less than 8;
      * output 1 (if it is) or 0 (if it is not).
      */
-    @Ignore
     @Test
     public void testAdvent2019Day05Example4() {
         int[] input = {3, 9, 7, 9, 10, 9, 4, 9, 99, -1, 8};
         IntcodeComputer computer = new IntcodeComputer(input);
-        computer.run();
-        assertEquals(99, computer.valueAtIndex(4));
+
+        testWithInput(computer, "7");
+        assertEquals(1, computer.getOutputs().get(0).intValue());
+
+        computer = new IntcodeComputer(input);
+        testWithInput(computer, "8");
+        assertEquals(0, computer.getOutputs().get(0).intValue());
+
+        computer = new IntcodeComputer(input);
+        testWithInput(computer, "9");
+        assertEquals(0, computer.getOutputs().get(0).intValue());
     }
 
     /**
      * Using immediate mode, consider whether the input is equal to 8;
      * output 1 (if it is) or 0 (if it is not).
      */
-    @Ignore
     @Test
     public void testAdvent2019Day05Example5() {
         int[] input = {3, 3, 1108, -1, 8, 3, 4, 3, 99};
         IntcodeComputer computer = new IntcodeComputer(input);
-        computer.run();
-        assertEquals(99, computer.valueAtIndex(4));
+
+        testWithInput(computer, "7");
+        assertEquals(0, computer.getOutputs().get(0).intValue());
+
+        computer = new IntcodeComputer(input);
+        testWithInput(computer, "8");
+        assertEquals(1, computer.getOutputs().get(0).intValue());
     }
 
     /**
      * Using immediate mode, consider whether the input is less than 8;
      * output 1 (if it is) or 0 (if it is not).
      */
-    @Ignore
     @Test
     public void testAdvent2019Day05Example6() {
         int[] input = {3, 3, 1107, -1, 8, 3, 4, 3, 99};
         IntcodeComputer computer = new IntcodeComputer(input);
-        computer.run();
-        assertEquals(99, computer.valueAtIndex(4));
+
+        testWithInput(computer, "7");
+        assertEquals(1, computer.getOutputs().get(0).intValue());
+
+        computer = new IntcodeComputer(input);
+        testWithInput(computer, "8");
+        assertEquals(0, computer.getOutputs().get(0).intValue());
     }
 
     /**
