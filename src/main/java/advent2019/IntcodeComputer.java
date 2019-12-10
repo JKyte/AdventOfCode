@@ -38,25 +38,25 @@ public class IntcodeComputer implements Runnable {
 
                 case 1:
                     //  OPCODE 1 -- ADD, 3 args
-                    System.out.println("ADD -- " + register[index] + ", " + register[index + 1] + ", " + register[index + 2]);
                     int addArgOne = parseArgument(index, 1, modes);
                     int addArgTwo = parseArgument(index, 2, modes);
+                    System.out.println("ADD  " + addArgOne + "  " + addArgTwo);
                     register[register[index + 3]] = addArgOne + addArgTwo;
                     index += 4;
                     continue;
 
                 case 2:
                     //  OPCODE 2 -- MULTIPLY, 3 args
-                    System.out.println("MULT -- " + register[index] + ", " + register[index + 1] + ", " + register[index + 2]);
                     int multArgOne = parseArgument(index, 1, modes);
                     int multArgTwo = parseArgument(index, 2, modes);
+                    System.out.println("MULTIPLY  " + multArgOne + "  " + multArgTwo);
                     register[register[index + 3]] = multArgOne * multArgTwo;
                     index += 4;
                     continue;
 
                 case 3:
                     //  OPCODE 3 -- SAVE INPUT, 1 arg
-                    System.out.println("SAVE INPUT");
+//                    System.out.println("SAVE INPUT");
                     Scanner scanner = new Scanner(System.in);
                     System.out.println("Papers, please: ");
                     int input = Integer.parseInt(scanner.nextLine());
@@ -67,28 +67,22 @@ public class IntcodeComputer implements Runnable {
 
                 case 4:
                     //  OPCODE 4 -- OUTPUT, 1 arg
-                    System.out.println("OUTPUT -- " + register[index] + ", " + register[index + 1]);
-                    int outValue = register[register[index + 1]];
+//                    int outValue = register[register[index + 1]];
+                    int outValue = parseArgument(index, 1, modes);
                     outputs.add(outValue);
-
-//                    int outValue = parseArgument(index, 1, modes);
-                    System.out.println("Output: " + outValue);
-                    if (isImmediateMode(1, modes)) {
-                        System.out.println("Output (immediate): ");
-                        System.exit(0);
-                    }
-//                    else {
-//                        System.out.println("Output (position=" + outIndex + "): " + register[outIndex]);
+                    System.out.println("OUTPUT  " + outValue);
+//                    if (isImmediateMode(1, modes)) {
+//                        System.out.println("Output (immediate): ");
+//                        System.exit(0);
 //                    }
                     index += 2;
                     continue;
 
                 case 5:
                     //  OPCODE 5 -- JUMP-IF-TRUE
-                    System.out.println("JUMP-IF-TRUE");
                     int jumpIfTrueArgOneValue = parseArgument(index, 1, modes);
                     int jumpIfTrueArgTwoValue = parseArgument(index, 2, modes);
-
+                    System.out.println("JUMP-IF-TRUE  " + jumpIfTrueArgOneValue + "  " + jumpIfTrueArgTwoValue);
                     if (jumpIfTrueArgOneValue == 0) {
                         //  No Jump if zero
                         index += 3;
@@ -99,9 +93,9 @@ public class IntcodeComputer implements Runnable {
 
                 case 6:
                     //  OPCODE 6 -- JUMP-IF-FALSE
-                    System.out.println("JUMP-IF-FALSE");
                     int jumpIfFalseArgOneValue = parseArgument(index, 1, modes);
                     int jumpIfFalseArgTwoValue = parseArgument(index, 2, modes);
+                    System.out.println("JUMP-IF-FALSE  " + jumpIfFalseArgOneValue + "  " + jumpIfFalseArgTwoValue);
                     if (jumpIfFalseArgOneValue == 0) {
                         //  If the first parameter is zero, set the instruction point to the second arg value.
                         index = jumpIfFalseArgTwoValue;
@@ -113,10 +107,9 @@ public class IntcodeComputer implements Runnable {
 
                 case 7:
                     //  OPCODE 7 -- LESS-THAN
-                    System.out.println("LESS-THAN");
                     int lessThanArgOneValue = parseArgument(index, 1, modes);
                     int lessThanArgTwoValue = parseArgument(index, 2, modes);
-//                    int lessThanArgThreeValue = parseArgument(index, 3, modes);
+                    System.out.println("LESS-THAN  " + lessThanArgOneValue + "  " + lessThanArgTwoValue);
                     int lessThanDest = register[index + 3];
                     if (lessThanArgOneValue < lessThanArgTwoValue) {
                         register[lessThanDest] = 1;
@@ -128,10 +121,9 @@ public class IntcodeComputer implements Runnable {
 
                 case 8:
                     //  OPCODE 8 -- EQUALS
-                    System.out.println("EQUALS -- " + register[index] + ", " + register[index + 1] + ", " + register[index + 2]);
                     int equalsArgOneValue = parseArgument(index, 1, modes);
                     int equalsArgTwoValue = parseArgument(index, 2, modes);
-//                    int equalsArgThreeValue = parseArgument(index, 3, modes);
+                    System.out.println("EQUALS  " + equalsArgOneValue + "  " + equalsArgTwoValue);
                     int equalsDestArg = register[index + 3];
                     if (equalsArgOneValue == equalsArgTwoValue) {
                         register[equalsDestArg] = 1;
