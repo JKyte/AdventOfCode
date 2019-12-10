@@ -172,25 +172,91 @@ public class IntcodeComputerTest {
      * Here are some jump tests that take an input, then output 0 if the input was zero
      * or 1 if the input was non-zero:
      */
-    @Ignore
     @Test
-    public void testAdvent2019Day05Example7() {
+    public void testAdvent2019Day05Example7_position_negativeInput() {
         int[] input = {3, 12, 6, 12, 15, 1, 13, 14, 13, 4, 13, 99, -1, 0, 1, 9}; //  Position mode
-//        int[] input = {3, 3, 1105, -1, 9, 1101, 0, 0, 12, 4, 12, 99, 1}; // Immediate mode
         IntcodeComputer computer = new IntcodeComputer(input);
-        computer.run();
-//        assertEquals(99, computer.valueAtIndex(4));
+        testWithInput(computer, "-1");
+        assertEquals(1, computer.getOutputs().get(0).intValue());
     }
 
-    @Ignore
     @Test
-    public void testAdvent2019Day05Example8() {
+    public void testAdvent2019Day05Example7_position_zeroInput() {
+        int[] input = {3, 12, 6, 12, 15, 1, 13, 14, 13, 4, 13, 99, -1, 0, 1, 9}; //  Position mode
+        IntcodeComputer computer = new IntcodeComputer(input);
+        testWithInput(computer, "0");
+        assertEquals(0, computer.getOutputs().get(0).intValue());
+    }
+
+    @Test
+    public void testAdvent2019Day05Example7_position_positiveInput() {
+        int[] input = {3, 12, 6, 12, 15, 1, 13, 14, 13, 4, 13, 99, -1, 0, 1, 9}; //  Position mode
+        IntcodeComputer computer = new IntcodeComputer(input);
+        testWithInput(computer, "1");
+        assertEquals(1, computer.getOutputs().get(0).intValue());
+    }
+
+    @Test
+    public void testAdvent2019Day05Example7_immediate_negativeInput() {
+        int[] input = {3, 3, 1105, -1, 9, 1101, 0, 0, 12, 4, 12, 99, 1}; // Immediate mode
+        IntcodeComputer computer = new IntcodeComputer(input);
+        testWithInput(computer, "-1");
+        assertEquals(1, computer.getOutputs().get(0).intValue());
+    }
+
+    @Test
+    public void testAdvent2019Day05Example7_immediate_zeroInput() {
+        int[] input = {3, 3, 1105, -1, 9, 1101, 0, 0, 12, 4, 12, 99, 1}; // Immediate mode
+        IntcodeComputer computer = new IntcodeComputer(input);
+        testWithInput(computer, "0");
+        assertEquals(0, computer.getOutputs().get(0).intValue());
+    }
+
+    @Test
+    public void testAdvent2019Day05Example7_immediate_positiveInput() {
+        int[] input = {3, 3, 1105, -1, 9, 1101, 0, 0, 12, 4, 12, 99, 1}; // Immediate mode
+        IntcodeComputer computer = new IntcodeComputer(input);
+        testWithInput(computer, "1");
+        assertEquals(1, computer.getOutputs().get(0).intValue());
+    }
+
+    // The program will then output 999 if the input value is below 8,
+    // output 1000 if the input value is equal to 8,
+    // or output 1001 if the input value is greater than 8.
+    @Test
+    public void testAdvent2019Day05Example8_7() {
+        int[] input = {3, 21, 1008, 21, 8, 20, 1005, 20, 22, 107, 8, 21, 20, 1006, 20, 31,
+                1106, 0, 36, 98, 0, 0, 1002, 21, 125, 20, 4, 20, 1105, 1, 46, 104,
+                999, 1105, 1, 46, 1101, 1000, 1, 20, 4, 20, 1105, 1, 46, 98, 99};
+            IntcodeComputer computer = new IntcodeComputer(input);
+            testWithInput(computer, "7");
+            assertEquals(999, computer.getOutputs().get(0).intValue());
+    }
+
+    // The program will then output 999 if the input value is below 8,
+    // output 1000 if the input value is equal to 8,
+    // or output 1001 if the input value is greater than 8.
+    @Test
+    public void testAdvent2019Day05Example8_8() {
         int[] input = {3, 21, 1008, 21, 8, 20, 1005, 20, 22, 107, 8, 21, 20, 1006, 20, 31,
                 1106, 0, 36, 98, 0, 0, 1002, 21, 125, 20, 4, 20, 1105, 1, 46, 104,
                 999, 1105, 1, 46, 1101, 1000, 1, 20, 4, 20, 1105, 1, 46, 98, 99};
         IntcodeComputer computer = new IntcodeComputer(input);
-        computer.run();
-//        assertEquals(99, computer.valueAtIndex(4));
+        testWithInput(computer, "8");
+        assertEquals(1000, computer.getOutputs().get(0).intValue());
+    }
+
+    // The program will then output 999 if the input value is below 8,
+    // output 1000 if the input value is equal to 8,
+    // or output 1001 if the input value is greater than 8.
+    @Test
+    public void testAdvent2019Day05Example8_9() {
+        int[] input = {3, 21, 1008, 21, 8, 20, 1005, 20, 22, 107, 8, 21, 20, 1006, 20, 31,
+                1106, 0, 36, 98, 0, 0, 1002, 21, 125, 20, 4, 20, 1105, 1, 46, 104,
+                999, 1105, 1, 46, 1101, 1000, 1, 20, 4, 20, 1105, 1, 46, 98, 99};
+        IntcodeComputer computer = new IntcodeComputer(input);
+        testWithInput(computer, "9");
+        assertEquals(1001, computer.getOutputs().get(0).intValue());
     }
 
     private void testInputsAndOutputs(int[] program, String[] inputs, String[] outputs) {
