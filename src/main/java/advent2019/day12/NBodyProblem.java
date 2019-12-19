@@ -1,14 +1,15 @@
 package advent2019.day12;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Example 1: 179
  * Example 2: 1940
  * Part 1: 10189
  * Example 1, part 2: 2772
- * Example 2, part 2: 4686774924
- * Part 2:
+ * Example 2, part 2: 4,686,774,924
+ * Part 2: 469,671,086,427,712
  */
 public class NBodyProblem {
 
@@ -28,22 +29,38 @@ public class NBodyProblem {
         System.out.println("Z period: " + z);
         long lcm = nBody.lcm(x, y, z);
         System.out.println("lcm: " + lcm);
+
+        System.out.println("X iterations to reach start: " + (lcm / x));
+        System.out.println("Y iterations to reach start: " + (lcm / y));
+        System.out.println("Z iterations to reach start: " + (lcm / z));
     }
 
-    //  This needs to be pair-wise.
-    //https://stackoverflow.com/questions/14586131/lcm-lowest-common-multiple-in-java
-    private long lcm(long... xyz) {
-        for (int m = 1; ; m++) {
-            int n = xyz.length;
-            for (long i : xyz) {
-                if (m % i != 0) {
-                    break;
-                }
-                if (--n == 0) {
-                    return m;
+    public long lcm(long... xyz) {
+        long[] m = Arrays.copyOf(xyz, xyz.length);
+
+        while (!allEquals(m)) {
+
+            //  Iterate across each number, for each number pair...
+            for (int ii = 0; ii < m.length - 1; ii++) {
+
+                while (m[ii] != m[ii + 1]) {
+                    if (m[ii] < m[ii + 1]) {
+                        m[ii] += xyz[ii];
+                    } else {
+                        m[ii + 1] += xyz[ii + 1];
+                    }
                 }
             }
         }
+        return m[0];
+    }
+
+    public boolean allEquals(long... longs) {
+        for (int ii = 0; ii < longs.length - 1; ii++) {
+            if (longs[ii] != longs[ii + 1])
+                return false;
+        }
+        return true;
     }
 
     private ArrayList<Moon> moons = new ArrayList<>();
@@ -64,20 +81,20 @@ public class NBodyProblem {
         //<x=5, y=5, z=10>
         //<x=2, y=-7, z=3>
         //<x=9, y=-8, z=-3>
-        Moon io = new Moon(-8,-10,0);
-        Moon europa = new Moon(5,5,10);
-        Moon ganymede = new Moon(2,-7,3);
-        Moon callisto = new Moon(9,-8,-3);
+//        Moon io = new Moon(-8,-10,0);
+//        Moon europa = new Moon(5,5,10);
+//        Moon ganymede = new Moon(2,-7,3);
+//        Moon callisto = new Moon(9,-8,-3);
 
         //  Part 1
         //<x=14, y=15, z=-2>
         //<x=17, y=-3, z=4>
         //<x=6, y=12, z=-13>
         //<x=-2, y=10, z=-8>
-//        Moon io = new Moon(14,15,-2);
-//        Moon europa = new Moon(17,-3,4);
-//        Moon ganymede = new Moon(6,12,-13);
-//        Moon callisto = new Moon(-2,10,-8);
+        Moon io = new Moon(14,15,-2);
+        Moon europa = new Moon(17,-3,4);
+        Moon ganymede = new Moon(6,12,-13);
+        Moon callisto = new Moon(-2,10,-8);
 
         moons.add(io);
         moons.add(europa);
