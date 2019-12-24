@@ -9,13 +9,13 @@ import java.util.NoSuchElementException;
  * <p>
  * Solution derived from here https://stackoverflow.com/questions/2920315/permutation-of-array
  */
-public class Permutation implements Iterator<int[]> {
+public class Permutation implements Iterator<long[]> {
 
-    private int[] backing;
+    private long[] backing;
 
     private boolean hasNext = false;
 
-    public Permutation(int[] backing) {
+    public Permutation(long[] backing) {
         //  Work with a copy of the array
         this.backing = Arrays.copyOf(backing, backing.length);
         //  Sort the array first.
@@ -30,11 +30,11 @@ public class Permutation implements Iterator<int[]> {
     }
 
     @Override
-    public int[] next() {
+    public long[] next() {
         if (!hasNext)
             throw new NoSuchElementException();
 
-        int[] output = Arrays.copyOf(backing, backing.length);
+        long[] output = Arrays.copyOf(backing, backing.length);
 
         //get next permutation
         hasNext = false;
@@ -60,9 +60,9 @@ public class Permutation implements Iterator<int[]> {
     }
 
     //  Helper method to swap two elements
-    private void swap(int[] a, int i, int j) {
-        int tmp = a[i];
-        a[i] = a[j];
-        a[j] = tmp;
+    private void swap(long[] a, long i, long j) {
+        long tmp = a[(int) i];
+        a[(int) i] = a[(int) j];
+        a[(int) j] = tmp;
     }
 }

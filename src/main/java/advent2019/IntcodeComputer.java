@@ -6,40 +6,65 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 public class IntcodeComputer {
 
-    private int[] register;
+    //  Used to identify a running computer.
+    private long id = -1;
 
-    private ArrayList<Integer> outputs;
+    // Flag to determine if computer is still executing.
+    boolean executing;
 
-    public IntcodeComputer(int[] register) {
+    //  Flag to determine if execution is halted or not.
+    boolean halted;
+
+    // Track the execution pointer globally.
+    long index = 0;
+
+    private long[] register;
+
+    private ArrayList<Long> outputs;
+
+    public IntcodeComputer(long[] register) {
+        this(register, 0);
+    }
+
+    public IntcodeComputer(long[] register, long id) {
         //  Operate on copy of program.
         this.register = Arrays.copyOf(register, register.length);
         this.outputs = new ArrayList<>();
+        this.id = id;
+        this.executing = true;
+        this.halted = false;
     }
 
-    public void runWithInput(int input) {
-        //  Set aside original input stream
-        InputStream originalSystemIn = System.in;
-        try {
-            //  Setup input stream to feed program input
-            InputStream testInput = new ByteArrayInputStream(("" + input).getBytes());
-            System.setIn(testInput);
-
-            run();
-        } finally {
-            System.setIn(originalSystemIn);
+    public void resume() {
+        if (!halted & executing) {
+            throw new RuntimeException("IntcodeComputer is already running, cannot resume.");
         }
+        halted = false;
+        run();
     }
 
-    public void runWithInputs(int[] inputs) {
+    public void resumeWithInputs(long input) {
+        if (!halted & executing) {
+            throw new RuntimeException("IntcodeComputer is already running, cannot resume.");
+        }
+        halted = false;
+
+        log("RESUMING at instruction pointer: " + index);
+
+        runWithInputs(input);
+    }
+
+    public void runWithInputs(long... inputs) {
         //  Set aside original input stream
         InputStream originalSystemIn = System.in;
         try {
             StringBuilder sb = new StringBuilder();
-            for(int input : inputs){
+            for (long input : inputs) {
                 sb.append(input).append(System.getProperty("line.separator"));
             }
 
@@ -54,45 +79,44 @@ public class IntcodeComputer {
     }
 
     public void run() {
-        int index = 0;
-        boolean running = true;
+
         Scanner scanner = new Scanner(System.in);
-        while (running) {
+        while (executing && !halted) {
 
             String opcodeAndMode = "";
             //  Switch on opcode
-            int opcode = register[index];
+            long opcode = (int) register[(int) index];
             opcodeAndMode += opcode;
-            int modes = 0;
+            long modes = 0;
 
             if (opcode > 99) {
 //                System.out.println("We got parameter modes: " + opcode);
-                int actualOpCode = opcode % 100;
+                long actualOpCode = opcode % 100;
 //                System.out.println("Actual op code: " + actualOpCode);
                 modes = opcode / 100;
 //                System.out.println("Remainder: " + modes);
                 opcode = actualOpCode;
                 opcodeAndMode += "  modes: " + modes;
             }
-//            System.out.println("opcode: " + opcodeAndMode);
+            log("opcode: " + opcodeAndMode);
 
-            switch (opcode) {
+            switch ((int) opcode) {
 
                 case 1:
                     //  OPCODE 1 -- ADD, 3 args
-                    int addArgOne = parseArgument(index, 1, modes);
-                    int addArgTwo = parseArgument(index, 2, modes);
+                    long addArgOne = parseArgument(index, 1, modes);
+                    long addArgTwo = parseArgument(index, 2, modes);
 //                    System.out.println("ADD  " + addArgOne + "  " + addArgTwo);
-                    register[register[index + 3]] = addArgOne + addArgTwo;
+                    register[(int) register[(int) (index + 3)]] = addArgOne + addArgTwo;
                     index += 4;
                     continue;
 
                 case 2:
                     //  OPCODE 2 -- MULTIPLY, 3 args
-                    int multArgOne = parseArgument(index, 1, modes);
-                    int multArgTwo = parseArgument(index, 2, modes);
+                    long multArgOne = parseArgument(index, 1, modes);
+                    long multArgTwo = parseArgument(index, 2, modes);
 //                    System.out.println("MULTIPLY  " + multArgOne + "  " + multArgTwo);
-                    register[register[index + 3]] = multArgOne * multArgTwo;
+                    register[(int) register[(int) (index + 3)]] = multArgOne * multArgTwo;
                     index += 4;
                     continue;
 
@@ -100,16 +124,24 @@ public class IntcodeComputer {
                     //  OPCODE 3 -- SAVE INPUT, 1 arg
 //                    System.out.println("SAVE INPUT");
 //                    System.out.println("Papers, please: ");
-                    int input = Integer.parseInt(scanner.nextLine());
+                    long input = -1;
+                    try {
+                        input = Integer.parseInt(scanner.nextLine());
+                    } catch (NoSuchElementException e) {
+                        //  If there's no element, halt the computer and save state.
+                        log("HALTING at instruction pointer: " + index);
+                        halted = true;
+                        break;
+                    }
 //                    scanner.close();
-                    register[register[index + 1]] = input;
+                    register[(int) register[(int) (index + 1)]] = input;
                     index += 2;
                     continue;
 
                 case 4:
                     //  OPCODE 4 -- OUTPUT, 1 arg
-//                    int outValue = register[register[index + 1]];
-                    int outValue = parseArgument(index, 1, modes);
+//                    long outValue = register[register[index + 1]];
+                    long outValue = parseArgument(index, 1, modes);
                     outputs.add(outValue);
 //                    System.out.println("OUTPUT  " + outValue);
 //                    if (isImmediateMode(1, modes)) {
@@ -121,8 +153,8 @@ public class IntcodeComputer {
 
                 case 5:
                     //  OPCODE 5 -- JUMP-IF-TRUE
-                    int jumpIfTrueArgOneValue = parseArgument(index, 1, modes);
-                    int jumpIfTrueArgTwoValue = parseArgument(index, 2, modes);
+                    long jumpIfTrueArgOneValue = parseArgument(index, 1, modes);
+                    long jumpIfTrueArgTwoValue = parseArgument(index, 2, modes);
 //                    System.out.println("JUMP-IF-TRUE  " + jumpIfTrueArgOneValue + "  " + jumpIfTrueArgTwoValue);
                     if (jumpIfTrueArgOneValue != 0) {
 
@@ -135,11 +167,11 @@ public class IntcodeComputer {
 
                 case 6:
                     //  OPCODE 6 -- JUMP-IF-FALSE
-                    int jumpIfFalseArgOneValue = parseArgument(index, 1, modes);
-                    int jumpIfFalseArgTwoValue = parseArgument(index, 2, modes);
+                    long jumpIfFalseArgOneValue = parseArgument(index, 1, modes);
+                    long jumpIfFalseArgTwoValue = parseArgument(index, 2, modes);
 //                    System.out.println("JUMP-IF-FALSE  " + jumpIfFalseArgOneValue + "  " + jumpIfFalseArgTwoValue);
                     if (jumpIfFalseArgOneValue == 0) {
-                        //  If the first parameter is zero, set the instruction point to the second arg value.
+                        //  If the first parameter is zero, set the instruction polong to the second arg value.
                         index = jumpIfFalseArgTwoValue;
                     } else {
                         //  No Jump if non-zero
@@ -149,28 +181,28 @@ public class IntcodeComputer {
 
                 case 7:
                     //  OPCODE 7 -- LESS-THAN
-                    int lessThanArgOneValue = parseArgument(index, 1, modes);
-                    int lessThanArgTwoValue = parseArgument(index, 2, modes);
+                    long lessThanArgOneValue = parseArgument(index, 1, modes);
+                    long lessThanArgTwoValue = parseArgument(index, 2, modes);
 //                    System.out.println("LESS-THAN  " + lessThanArgOneValue + "  " + lessThanArgTwoValue);
-                    int lessThanDest = register[index + 3];
+                    long lessThanDest = register[(int) (index + 3)];
                     if (lessThanArgOneValue < lessThanArgTwoValue) {
-                        register[lessThanDest] = 1;
+                        register[(int) lessThanDest] = 1;
                     } else {
-                        register[lessThanDest] = 0;
+                        register[(int) lessThanDest] = 0;
                     }
                     index += 4;
                     continue;
 
                 case 8:
                     //  OPCODE 8 -- EQUALS
-                    int equalsArgOneValue = parseArgument(index, 1, modes);
-                    int equalsArgTwoValue = parseArgument(index, 2, modes);
+                    long equalsArgOneValue = parseArgument(index, 1, modes);
+                    long equalsArgTwoValue = parseArgument(index, 2, modes);
 //                    System.out.println("EQUALS  " + equalsArgOneValue + "  " + equalsArgTwoValue);
-                    int equalsDestArg = register[index + 3];
+                    long equalsDestArg = register[(int) (index + 3)];
                     if (equalsArgOneValue == equalsArgTwoValue) {
-                        register[equalsDestArg] = 1;
+                        register[(int) equalsDestArg] = 1;
                     } else {
-                        register[equalsDestArg] = 0;
+                        register[(int) equalsDestArg] = 0;
                     }
                     index += 4;
                     continue;
@@ -178,30 +210,30 @@ public class IntcodeComputer {
                 case 99:
                     //  OPCODE 99 -- END PROGRAM
 //                    System.out.println("99 -- END PROGRAM");
-                    running = false;
+                    executing = false;
+                    halted = true;
                     continue;
 
                 default:
-                    System.out.println("Unknown opcode: " + register[index]);
+                    System.out.println("Unknown opcode: " + register[(int) index]);
                     System.exit(0);
             }
         }
     }
 
-    public int parseArgument(int opcodeIndex, int argIndex, int modes) {
+    public long parseArgument(long opcodeIndex, long argIndex, long modes) {
         if (isImmediateMode(argIndex, modes)) {
 //            System.out.println("\targ " + argIndex + " is immediate");
             //  If mode is ONE then execute in IMMEDIATE MODE (value of arg_value)
-            return register[opcodeIndex + argIndex];
+            return register[(int) (opcodeIndex + argIndex)];
         } else {
 //            System.out.println("\targ " + argIndex + " is position");
             //  If mode is ZERO then execute in POSITION MODE (value is register[arg_value]
-            return register[register[opcodeIndex + argIndex]];
+            return register[(int) register[(int) (opcodeIndex + argIndex)]];
         }
     }
 
     /**
-     * TODO bug is here.
      * Position mode is mode 0
      * Immediate mode is mode 1
      *
@@ -209,7 +241,7 @@ public class IntcodeComputer {
      * @param modes
      * @return
      */
-    public boolean isImmediateMode(int argIndex, int modes) {
+    public boolean isImmediateMode(long argIndex, long modes) {
         if (modes == 0) {
             return false;
         }
@@ -217,12 +249,12 @@ public class IntcodeComputer {
         if (modes > 0) {
             //  Check for possibility of immediate mode.
 
-            String modeString = Integer.toString(modes);
+            String modeString = Long.toString(modes);
             //  If the argIndex is greater than the mode string, then assume zero -- immediate mode.
             if (argIndex <= modeString.length()) {
                 //  Otherwise the mode string falls within our bounds.
                 modeString = StringUtils.reverse(modeString);
-                int mode = Integer.parseInt("" + modeString.charAt(argIndex - 1));
+                long mode = Long.parseLong("" + modeString.charAt((int) (argIndex - 1)));
 //                System.out.println("Mode Int: " + mode);
                 if (mode == 1) {
                     return true;
@@ -234,12 +266,27 @@ public class IntcodeComputer {
         return false;
     }
 
-    public int valueAtIndex(int index) {
-        return register[index];
+    public void log(String msg) {
+        System.out.println("computer " + id + " " + msg);
     }
 
-    public ArrayList<Integer> getOutputs() {
+    public boolean isHalted() {
+        return halted;
+    }
+
+    public boolean isExecuting() {
+        return executing;
+    }
+
+    public long valueAtIndex(long index) {
+        return register[(int) index];
+    }
+
+    public ArrayList<Long> getOutputs() {
         return outputs;
     }
 
+    public long getLastOutput() {
+        return outputs.get(outputs.size() - 1);
+    }
 }
