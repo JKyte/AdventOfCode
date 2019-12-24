@@ -2,24 +2,61 @@ package advent2019;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 
-public class IntcodeComputer implements Runnable {
+public class IntcodeComputer {
 
     private int[] register;
 
     private ArrayList<Integer> outputs;
 
     public IntcodeComputer(int[] register) {
-        this.register = register;
+        //  Operate on copy of program.
+        this.register = Arrays.copyOf(register, register.length);
         this.outputs = new ArrayList<>();
     }
 
-    @Override
+    public void runWithInput(int input) {
+        //  Set aside original input stream
+        InputStream originalSystemIn = System.in;
+        try {
+            //  Setup input stream to feed program input
+            InputStream testInput = new ByteArrayInputStream(("" + input).getBytes());
+            System.setIn(testInput);
+
+            run();
+        } finally {
+            System.setIn(originalSystemIn);
+        }
+    }
+
+    public void runWithInputs(int[] inputs) {
+        //  Set aside original input stream
+        InputStream originalSystemIn = System.in;
+        try {
+            StringBuilder sb = new StringBuilder();
+            for(int input : inputs){
+                sb.append(input).append(System.getProperty("line.separator"));
+            }
+
+            //  Setup input stream to feed program input
+            InputStream testInput = new ByteArrayInputStream(sb.toString().getBytes());
+            System.setIn(testInput);
+
+            run();
+        } finally {
+            System.setIn(originalSystemIn);
+        }
+    }
+
     public void run() {
         int index = 0;
         boolean running = true;
+        Scanner scanner = new Scanner(System.in);
         while (running) {
 
             String opcodeAndMode = "";
@@ -37,7 +74,7 @@ public class IntcodeComputer implements Runnable {
                 opcode = actualOpCode;
                 opcodeAndMode += "  modes: " + modes;
             }
-            System.out.println("opcode: " + opcodeAndMode);
+//            System.out.println("opcode: " + opcodeAndMode);
 
             switch (opcode) {
 
@@ -45,7 +82,7 @@ public class IntcodeComputer implements Runnable {
                     //  OPCODE 1 -- ADD, 3 args
                     int addArgOne = parseArgument(index, 1, modes);
                     int addArgTwo = parseArgument(index, 2, modes);
-                    System.out.println("ADD  " + addArgOne + "  " + addArgTwo);
+//                    System.out.println("ADD  " + addArgOne + "  " + addArgTwo);
                     register[register[index + 3]] = addArgOne + addArgTwo;
                     index += 4;
                     continue;
@@ -54,7 +91,7 @@ public class IntcodeComputer implements Runnable {
                     //  OPCODE 2 -- MULTIPLY, 3 args
                     int multArgOne = parseArgument(index, 1, modes);
                     int multArgTwo = parseArgument(index, 2, modes);
-                    System.out.println("MULTIPLY  " + multArgOne + "  " + multArgTwo);
+//                    System.out.println("MULTIPLY  " + multArgOne + "  " + multArgTwo);
                     register[register[index + 3]] = multArgOne * multArgTwo;
                     index += 4;
                     continue;
@@ -62,10 +99,9 @@ public class IntcodeComputer implements Runnable {
                 case 3:
                     //  OPCODE 3 -- SAVE INPUT, 1 arg
 //                    System.out.println("SAVE INPUT");
-                    Scanner scanner = new Scanner(System.in);
-                    System.out.println("Papers, please: ");
+//                    System.out.println("Papers, please: ");
                     int input = Integer.parseInt(scanner.nextLine());
-                    scanner.close();
+//                    scanner.close();
                     register[register[index + 1]] = input;
                     index += 2;
                     continue;
@@ -75,7 +111,7 @@ public class IntcodeComputer implements Runnable {
 //                    int outValue = register[register[index + 1]];
                     int outValue = parseArgument(index, 1, modes);
                     outputs.add(outValue);
-                    System.out.println("OUTPUT  " + outValue);
+//                    System.out.println("OUTPUT  " + outValue);
 //                    if (isImmediateMode(1, modes)) {
 //                        System.out.println("Output (immediate): ");
 //                        System.exit(0);
@@ -87,7 +123,7 @@ public class IntcodeComputer implements Runnable {
                     //  OPCODE 5 -- JUMP-IF-TRUE
                     int jumpIfTrueArgOneValue = parseArgument(index, 1, modes);
                     int jumpIfTrueArgTwoValue = parseArgument(index, 2, modes);
-                    System.out.println("JUMP-IF-TRUE  " + jumpIfTrueArgOneValue + "  " + jumpIfTrueArgTwoValue);
+//                    System.out.println("JUMP-IF-TRUE  " + jumpIfTrueArgOneValue + "  " + jumpIfTrueArgTwoValue);
                     if (jumpIfTrueArgOneValue != 0) {
 
                         index = jumpIfTrueArgTwoValue;
@@ -101,7 +137,7 @@ public class IntcodeComputer implements Runnable {
                     //  OPCODE 6 -- JUMP-IF-FALSE
                     int jumpIfFalseArgOneValue = parseArgument(index, 1, modes);
                     int jumpIfFalseArgTwoValue = parseArgument(index, 2, modes);
-                    System.out.println("JUMP-IF-FALSE  " + jumpIfFalseArgOneValue + "  " + jumpIfFalseArgTwoValue);
+//                    System.out.println("JUMP-IF-FALSE  " + jumpIfFalseArgOneValue + "  " + jumpIfFalseArgTwoValue);
                     if (jumpIfFalseArgOneValue == 0) {
                         //  If the first parameter is zero, set the instruction point to the second arg value.
                         index = jumpIfFalseArgTwoValue;
@@ -115,7 +151,7 @@ public class IntcodeComputer implements Runnable {
                     //  OPCODE 7 -- LESS-THAN
                     int lessThanArgOneValue = parseArgument(index, 1, modes);
                     int lessThanArgTwoValue = parseArgument(index, 2, modes);
-                    System.out.println("LESS-THAN  " + lessThanArgOneValue + "  " + lessThanArgTwoValue);
+//                    System.out.println("LESS-THAN  " + lessThanArgOneValue + "  " + lessThanArgTwoValue);
                     int lessThanDest = register[index + 3];
                     if (lessThanArgOneValue < lessThanArgTwoValue) {
                         register[lessThanDest] = 1;
@@ -129,7 +165,7 @@ public class IntcodeComputer implements Runnable {
                     //  OPCODE 8 -- EQUALS
                     int equalsArgOneValue = parseArgument(index, 1, modes);
                     int equalsArgTwoValue = parseArgument(index, 2, modes);
-                    System.out.println("EQUALS  " + equalsArgOneValue + "  " + equalsArgTwoValue);
+//                    System.out.println("EQUALS  " + equalsArgOneValue + "  " + equalsArgTwoValue);
                     int equalsDestArg = register[index + 3];
                     if (equalsArgOneValue == equalsArgTwoValue) {
                         register[equalsDestArg] = 1;
@@ -141,7 +177,7 @@ public class IntcodeComputer implements Runnable {
 
                 case 99:
                     //  OPCODE 99 -- END PROGRAM
-                    System.out.println("99 -- END PROGRAM");
+//                    System.out.println("99 -- END PROGRAM");
                     running = false;
                     continue;
 
@@ -154,11 +190,11 @@ public class IntcodeComputer implements Runnable {
 
     public int parseArgument(int opcodeIndex, int argIndex, int modes) {
         if (isImmediateMode(argIndex, modes)) {
-            System.out.println("\targ " + argIndex + " is immediate");
+//            System.out.println("\targ " + argIndex + " is immediate");
             //  If mode is ONE then execute in IMMEDIATE MODE (value of arg_value)
             return register[opcodeIndex + argIndex];
         } else {
-            System.out.println("\targ " + argIndex + " is position");
+//            System.out.println("\targ " + argIndex + " is position");
             //  If mode is ZERO then execute in POSITION MODE (value is register[arg_value]
             return register[register[opcodeIndex + argIndex]];
         }
