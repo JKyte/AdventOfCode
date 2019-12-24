@@ -21,8 +21,11 @@ public class IntcodeComputer implements Runnable {
         int index = 0;
         boolean running = true;
         while (running) {
+
+            String opcodeAndMode = "";
             //  Switch on opcode
             int opcode = register[index];
+            opcodeAndMode += opcode;
             int modes = 0;
 
             if (opcode > 99) {
@@ -32,7 +35,9 @@ public class IntcodeComputer implements Runnable {
                 modes = opcode / 100;
 //                System.out.println("Remainder: " + modes);
                 opcode = actualOpCode;
+                opcodeAndMode += "  modes: " + modes;
             }
+            System.out.println("opcode: " + opcodeAndMode);
 
             switch (opcode) {
 
@@ -83,11 +88,12 @@ public class IntcodeComputer implements Runnable {
                     int jumpIfTrueArgOneValue = parseArgument(index, 1, modes);
                     int jumpIfTrueArgTwoValue = parseArgument(index, 2, modes);
                     System.out.println("JUMP-IF-TRUE  " + jumpIfTrueArgOneValue + "  " + jumpIfTrueArgTwoValue);
-                    if (jumpIfTrueArgOneValue == 0) {
+                    if (jumpIfTrueArgOneValue != 0) {
+
+                        index = jumpIfTrueArgTwoValue;
+                    } else {
                         //  No Jump if zero
                         index += 3;
-                    } else {
-                        index = jumpIfTrueArgTwoValue;
                     }
                     continue;
 
@@ -148,15 +154,18 @@ public class IntcodeComputer implements Runnable {
 
     public int parseArgument(int opcodeIndex, int argIndex, int modes) {
         if (isImmediateMode(argIndex, modes)) {
+            System.out.println("\targ " + argIndex + " is immediate");
             //  If mode is ONE then execute in IMMEDIATE MODE (value of arg_value)
             return register[opcodeIndex + argIndex];
         } else {
+            System.out.println("\targ " + argIndex + " is position");
             //  If mode is ZERO then execute in POSITION MODE (value is register[arg_value]
             return register[register[opcodeIndex + argIndex]];
         }
     }
 
     /**
+     * TODO bug is here.
      * Position mode is mode 0
      * Immediate mode is mode 1
      *
