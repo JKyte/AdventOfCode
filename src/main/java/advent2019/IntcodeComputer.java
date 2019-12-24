@@ -195,7 +195,7 @@ public class IntcodeComputer implements Runnable {
                 }
             }
         }
-        return true;
+        return false;
     }
 
     public int valueAtIndex(int index) {

@@ -8,8 +8,30 @@ import java.io.InputStream;
 import java.io.PrintStream;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class IntcodeComputerTest {
+
+    @Test
+    public void testIsImmediate(){
+        IntcodeComputer computer = new IntcodeComputer(null);
+
+        //  When modes is zero, we are NOT in immediate mode
+        assertFalse(computer.isImmediateMode(1, 0));
+
+        //  Index 1 is zero
+        assertFalse(computer.isImmediateMode(1, 10));
+        //  Index 2 is one
+        assertTrue(computer.isImmediateMode(2, 10));
+
+        //  Implied indices
+        //  Index 1 is one
+        assertTrue(computer.isImmediateMode(1, 1));
+        //  Index 2 is IMPLIED to be zero.
+        assertFalse(computer.isImmediateMode(2, 1));
+
+    }
 
     @Test
     public void testAdvent2019Day2Example1() {
