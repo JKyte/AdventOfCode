@@ -15,13 +15,16 @@ public class IntcodeComputer {
     private long id = -1;
 
     // Flag to determine if computer is still executing.
-    boolean executing;
+    private boolean executing;
 
     //  Flag to determine if execution is halted or not.
-    boolean halted;
+    private boolean halted;
 
     // Track the execution pointer globally.
-    long index = 0;
+    private long index = 0;
+
+    //  Used for instructions in relative mode (mode 2)
+    private long relativeBase = 0;
 
     private long[] register;
 
@@ -221,6 +224,8 @@ public class IntcodeComputer {
         }
     }
 
+    //  TODO -- refactor so it parses the mode for the index, then identifies the  mode.
+    //   Throw illegal arg exception if unknown mode encountered.
     public long parseArgument(long opcodeIndex, long argIndex, long modes) {
         if (isImmediateMode(argIndex, modes)) {
 //            System.out.println("\targ " + argIndex + " is immediate");
