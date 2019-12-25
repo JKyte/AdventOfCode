@@ -24,7 +24,7 @@ public class AmplifierCircuit {
 
     public AmplifierCircuit(long[] program) {
         this.program = Arrays.copyOf(program, program.length);
-        System.out.println("Starting program: " + Arrays.toString(program));
+//        System.out.println("Starting program: " + Arrays.toString(program));
     }
 
 
@@ -64,7 +64,7 @@ public class AmplifierCircuit {
 
     public long getThrust(long phaseSetting, long input) {
         IntcodeComputer computer = new IntcodeComputer(program);
-        computer.runWithInputs(new long[]{phaseSetting, input});
+        computer.runWithInputs(phaseSetting, input);
         if (computer.getOutputs().size() > 1) {
             System.out.println("More than one output.");
             System.exit(0);

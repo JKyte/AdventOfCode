@@ -36,7 +36,7 @@ public class IntcodeComputer {
 
     public IntcodeComputer(long[] register, long id) {
         //  Operate on copy of program.
-        this.register = Arrays.copyOf(register, register.length);
+        this.register = Arrays.copyOf(register, 4096);
         this.outputs = new ArrayList<>();
         this.id = id;
         this.executing = true;
@@ -57,7 +57,7 @@ public class IntcodeComputer {
         }
         halted = false;
 
-        log("RESUMING at instruction pointer: " + index);
+//        log("RESUMING at instruction pointer: " + index);
 
         runWithInputs(input);
     }
@@ -101,7 +101,7 @@ public class IntcodeComputer {
                 opcode = actualOpCode;
                 opcodeAndMode += "  modes: " + modes;
             }
-            log("opcode: " + opcodeAndMode);
+//            log("opcode: " + opcodeAndMode);
 
             switch ((int) opcode) {
 
@@ -109,8 +109,16 @@ public class IntcodeComputer {
                     //  OPCODE 1 -- ADD, 3 args
                     long addArgOne = parseArgument(index, 1, modes);
                     long addArgTwo = parseArgument(index, 2, modes);
+//                    long addDest = parseArgument(index, 3, modes);
 //                    System.out.println("ADD  " + addArgOne + "  " + addArgTwo);
-                    register[(int) register[(int) (index + 3)]] = addArgOne + addArgTwo;
+                    long addMode = getModeForIndex(3, modes);
+                    if (addMode == 2) {
+                        register[(int) (register[(int) (index + 3)] + relativeBase)] = addArgOne + addArgTwo;
+//                        System.exit(0);
+                    } else {
+                        //  This is effectively position mode. store result in position of third arg.
+                        register[(int) register[(int) (index + 3)]] = addArgOne + addArgTwo;
+                    }
                     index += 4;
                     continue;
 
@@ -118,13 +126,25 @@ public class IntcodeComputer {
                     //  OPCODE 2 -- MULTIPLY, 3 args
                     long multArgOne = parseArgument(index, 1, modes);
                     long multArgTwo = parseArgument(index, 2, modes);
+                    long multMode = getModeForIndex(3, modes);
+                    long multDest = -1L;
+                    if (multMode == 2) {
+                        //  Handle relative mode.
+                        multDest = register[(int) (index + 3)] + relativeBase;
+                    } else {
+                        //  Default to position mode
+                        multDest = register[(int) (index + 3)];
+                    }
+
 //                    System.out.println("MULTIPLY  " + multArgOne + "  " + multArgTwo);
-                    register[(int) register[(int) (index + 3)]] = multArgOne * multArgTwo;
+                    register[(int) multDest] = multArgOne * multArgTwo;
                     index += 4;
                     continue;
 
                 case 3:
                     //  OPCODE 3 -- SAVE INPUT, 1 arg
+                    //  Save input to the position given by its only parameter.
+
 //                    System.out.println("SAVE INPUT");
 //                    System.out.println("Papers, please: ");
                     long input = -1;
@@ -132,25 +152,27 @@ public class IntcodeComputer {
                         input = Integer.parseInt(scanner.nextLine());
                     } catch (NoSuchElementException e) {
                         //  If there's no element, halt the computer and save state.
-                        log("HALTING at instruction pointer: " + index);
+//                        log("HALTING at instruction pointer: " + index);
                         halted = true;
                         break;
                     }
-//                    scanner.close();
-                    register[(int) register[(int) (index + 1)]] = input;
+                    int saveMode = getModeForIndex(1, modes);
+                    if (saveMode == 0) {
+                        register[(int) register[(int) (index + 1)]] = input;
+                    } else if (saveMode == 2) {
+                        long position = parseArgument(index, 1, modes);
+                        register[(int) (relativeBase + register[(int) (index + 1)])] = input;
+                    } else {
+                        System.out.println("something went wrong trying to save input.");
+                        System.exit(0);
+                    }
                     index += 2;
                     continue;
 
                 case 4:
                     //  OPCODE 4 -- OUTPUT, 1 arg
-//                    long outValue = register[register[index + 1]];
                     long outValue = parseArgument(index, 1, modes);
                     outputs.add(outValue);
-//                    System.out.println("OUTPUT  " + outValue);
-//                    if (isImmediateMode(1, modes)) {
-//                        System.out.println("Output (immediate): ");
-//                        System.exit(0);
-//                    }
                     index += 2;
                     continue;
 
@@ -158,9 +180,7 @@ public class IntcodeComputer {
                     //  OPCODE 5 -- JUMP-IF-TRUE
                     long jumpIfTrueArgOneValue = parseArgument(index, 1, modes);
                     long jumpIfTrueArgTwoValue = parseArgument(index, 2, modes);
-//                    System.out.println("JUMP-IF-TRUE  " + jumpIfTrueArgOneValue + "  " + jumpIfTrueArgTwoValue);
                     if (jumpIfTrueArgOneValue != 0) {
-
                         index = jumpIfTrueArgTwoValue;
                     } else {
                         //  No Jump if zero
@@ -172,9 +192,8 @@ public class IntcodeComputer {
                     //  OPCODE 6 -- JUMP-IF-FALSE
                     long jumpIfFalseArgOneValue = parseArgument(index, 1, modes);
                     long jumpIfFalseArgTwoValue = parseArgument(index, 2, modes);
-//                    System.out.println("JUMP-IF-FALSE  " + jumpIfFalseArgOneValue + "  " + jumpIfFalseArgTwoValue);
                     if (jumpIfFalseArgOneValue == 0) {
-                        //  If the first parameter is zero, set the instruction polong to the second arg value.
+                        //  If the first parameter is zero, set the instruction to the second arg value.
                         index = jumpIfFalseArgTwoValue;
                     } else {
                         //  No Jump if non-zero
@@ -186,8 +205,16 @@ public class IntcodeComputer {
                     //  OPCODE 7 -- LESS-THAN
                     long lessThanArgOneValue = parseArgument(index, 1, modes);
                     long lessThanArgTwoValue = parseArgument(index, 2, modes);
-//                    System.out.println("LESS-THAN  " + lessThanArgOneValue + "  " + lessThanArgTwoValue);
-                    long lessThanDest = register[(int) (index + 3)];
+                    long lessMode = getModeForIndex(3, modes);
+
+                    long lessThanDest = -1L;
+                    if (lessMode == 2) {
+                        //  Handle relative base for destinations.
+                        lessThanDest = register[(int) (index + 3)] + relativeBase;
+                    } else {
+                        //  Default is position mode. Destinations can never be immediate.
+                        lessThanDest = register[(int) (index + 3)];
+                    }
                     if (lessThanArgOneValue < lessThanArgTwoValue) {
                         register[(int) lessThanDest] = 1;
                     } else {
@@ -200,8 +227,14 @@ public class IntcodeComputer {
                     //  OPCODE 8 -- EQUALS
                     long equalsArgOneValue = parseArgument(index, 1, modes);
                     long equalsArgTwoValue = parseArgument(index, 2, modes);
-//                    System.out.println("EQUALS  " + equalsArgOneValue + "  " + equalsArgTwoValue);
-                    long equalsDestArg = register[(int) (index + 3)];
+                    long equalsDestArg = -1L;
+                    long eqMode = getModeForIndex(3, modes);
+                    if (eqMode == 2) {
+                        equalsDestArg = register[(int) (index + 3)] + relativeBase;
+                    } else {
+                        equalsDestArg = register[(int) (index + 3)];
+                    }
+
                     if (equalsArgOneValue == equalsArgTwoValue) {
                         register[(int) equalsDestArg] = 1;
                     } else {
@@ -210,9 +243,16 @@ public class IntcodeComputer {
                     index += 4;
                     continue;
 
+                case 9:
+                    //  OPCODE 9 -- ADJUST RELATIVE BASE
+                    //  Adjusts the relative base by the value of it's only parameter.
+                    long adjustArgOneValue = parseArgument(index, 1, modes);
+                    relativeBase += adjustArgOneValue;
+                    index += 2;
+                    continue;
+
                 case 99:
                     //  OPCODE 99 -- END PROGRAM
-//                    System.out.println("99 -- END PROGRAM");
                     executing = false;
                     halted = true;
                     continue;
@@ -224,17 +264,32 @@ public class IntcodeComputer {
         }
     }
 
-    //  TODO -- refactor so it parses the mode for the index, then identifies the  mode.
-    //   Throw illegal arg exception if unknown mode encountered.
     public long parseArgument(long opcodeIndex, long argIndex, long modes) {
-        if (isImmediateMode(argIndex, modes)) {
-//            System.out.println("\targ " + argIndex + " is immediate");
-            //  If mode is ONE then execute in IMMEDIATE MODE (value of arg_value)
-            return register[(int) (opcodeIndex + argIndex)];
-        } else {
+//        log("parseArg opcodeIndex: " + opcodeIndex + " argIndex: " + argIndex + " modes: " + modes);
+        long mode = getModeForIndex(argIndex, modes);
+//        log("parsedMode: " + mode);
+
+        switch ((int) mode) {
+            case 0:
+                //  ZERO is POSITION MODE. Argument value is at register[arg_value]
+
 //            System.out.println("\targ " + argIndex + " is position");
-            //  If mode is ZERO then execute in POSITION MODE (value is register[arg_value]
-            return register[(int) register[(int) (opcodeIndex + argIndex)]];
+                //  If mode is ZERO then execute in POSITION MODE (value is register[arg_value]
+                return register[(int) register[(int) (opcodeIndex + argIndex)]];
+            case 1:
+                //  ONE is IMMEDIATE MODE. Argument value is the actual arg_value.
+                //            System.out.println("\targ " + argIndex + " is immediate");
+                //  If mode is ONE then execute in IMMEDIATE MODE (value of arg_value)
+                return register[(int) (opcodeIndex + argIndex)];
+
+            case 2:
+                //  TWO is RELATIVE MODE. Argument value is relativeBase + the value of the arg.
+                return register[(int) (relativeBase + register[(int) (opcodeIndex + argIndex)])];
+
+            default:
+                System.out.println("Unknown mode encountered, index " + argIndex + " for modes " + modes);
+                System.exit(0);
+                return -1L;
         }
     }
 
@@ -253,7 +308,6 @@ public class IntcodeComputer {
 
         if (modes > 0) {
             //  Check for possibility of immediate mode.
-
             String modeString = Long.toString(modes);
             //  If the argIndex is greater than the mode string, then assume zero -- immediate mode.
             if (argIndex <= modeString.length()) {
@@ -271,9 +325,30 @@ public class IntcodeComputer {
         return false;
     }
 
+    public int getModeForIndex(long index, long modes) {
+        if (modes == 0)
+            return 0;
+        String modeString = Long.toString(modes);
+        //  Arguments out of bounds are assumed to be zero.
+        if (index > modeString.length())
+            return 0;
+        int modeIndex = (int) (modeString.length() - index);
+        long mode = Long.parseLong("" + modeString.charAt(modeIndex));
+        return (int) mode;
+    }
+
     public void log(String msg) {
         System.out.println("computer " + id + " " + msg);
     }
+
+    public void setValueAtIndex(int index, long value) {
+        register[index] = value;
+    }
+
+    public long getValueAtIndex(int index) {
+        return register[index];
+    }
+
 
     public boolean isHalted() {
         return halted;
@@ -293,5 +368,13 @@ public class IntcodeComputer {
 
     public long getLastOutput() {
         return outputs.get(outputs.size() - 1);
+    }
+
+    public long getRelativeBase() {
+        return relativeBase;
+    }
+
+    public void setRelativeBase(long relativeBase) {
+        this.relativeBase = relativeBase;
     }
 }
