@@ -370,6 +370,10 @@ public class IntcodeComputer {
         return outputs.get(outputs.size() - 1);
     }
 
+    public void clearOutputs() {
+        this.outputs.clear();
+    }
+
     public long getRelativeBase() {
         return relativeBase;
     }
