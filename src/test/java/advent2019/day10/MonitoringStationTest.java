@@ -2,7 +2,7 @@ package advent2019.day10;
 
 import org.junit.Test;
 
-import java.awt.*;
+import java.awt.Point;
 
 import static org.junit.Assert.assertEquals;
 
@@ -120,7 +120,7 @@ public class MonitoringStationTest {
 
         //  Part 2, the 200th asteroid to be zapped is 8,2
         assertEquals(new Point(8, 2), ms.zapzap(11, 13, 200));
-        assertEquals(802, pointToAnswer(new Point(8,2)));
+        assertEquals(802, pointToAnswer(new Point(8, 2)));
     }
 
     @Test
@@ -175,11 +175,11 @@ public class MonitoringStationTest {
         assertEquals(340, ms.evaluatePosition(28, 29));
 
         //  Part 2, the 200th asteroid to be zapped is !2,14
-        assertEquals(new Point(26,28), ms.zapzap(28, 29, 200));
-        assertEquals(2628, pointToAnswer(new Point(26,28)));
+        assertEquals(new Point(26, 28), ms.zapzap(28, 29, 200));
+        assertEquals(2628, pointToAnswer(new Point(26, 28)));
     }
 
-    private int pointToAnswer(Point p){
+    private int pointToAnswer(Point p) {
         return (p.x * 100) + p.y;
     }
 }
