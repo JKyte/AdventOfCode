@@ -3,35 +3,58 @@ package advent2017.day03;
 public class SpiralMemory {
 
     public SpiralMemory() {
-
     }
 
     public int getSteps(int data) {
-        if (data == 1) {
+
+        //  1. Find the ring
+        int ring = getRing(data);
+        int midpointOffset = getMidpointOffset(ring, data);
+
+        //  Distance is ring + data distance from midpoint.
+        return ring + midpointOffset;
+    }
+
+    private int getRing(int data) {
+        int ring = -1;
+        for (int i = 0; i < 500; i++) {
+            int lengthOfSize = getLengthOfSide(i);
+            int size = lengthOfSize * lengthOfSize;
+            if (size >= data) {
+                ring = i;
+                break;
+            }
+        }
+        return ring;
+    }
+
+    private int getMidpointOffset(int ring, int data) {
+        int lengthOfSide = getLengthOfSide(ring);
+        int midpoint = midPoint(lengthOfSide);
+
+        //  First, check to see if the data is at a midpoint
+        if (data % midpoint == 0) {
             return 0;
         }
 
-        //  Size of side
-        int size = 1;
-        int current = 1;
-        int total = 1;
-        do {
-            size += 2;
-            current = getCountForRing(size);
-            total += current;
+        int startData = lengthOfSide * lengthOfSide;
+        int delta = startData - data;
 
-        } while (total < data);
-
-        return calculateSteps(data, size, current, total);
+        int offset = offset(data, lengthOfSide);
+        return offset;
     }
 
-    private int getCountForRing(int size) {
-        int smaller = size - 2;
-        return size + size + smaller + smaller;
+    private int getLengthOfSide(int ring) {
+        return ring * 2 + 1;
     }
 
-    private int calculateSteps(int data, int size, int current, int total) {
-        int start = total - current + 1;
-        return 0;
+    private int midPoint(int len) {
+        return len / 2 + 1;
     }
+
+    private int offset(int data, int lengthOfSide) {
+        //  +1 adjusts the zero indexed to the logical one indexed side length
+        return data % lengthOfSide + 1;
+    }
+
 }

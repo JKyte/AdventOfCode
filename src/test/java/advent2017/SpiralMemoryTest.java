@@ -32,6 +32,19 @@ public class SpiralMemoryTest {
     }
 
     @Test
+    public void testInner() {
+        SpiralMemory memory = new SpiralMemory();
+        assertEquals(1, memory.getSteps(2));
+        assertEquals(2, memory.getSteps(3));
+        assertEquals(1, memory.getSteps(4));
+        assertEquals(2, memory.getSteps(5));
+        assertEquals(1, memory.getSteps(6));
+        assertEquals(2, memory.getSteps(7));
+        assertEquals(1, memory.getSteps(8));
+        assertEquals(2, memory.getSteps(9));
+    }
+
+    @Test
     public void testPartOne() {
         SpiralMemory memory = new SpiralMemory();
         assertEquals(-1, memory.getSteps(277678));
