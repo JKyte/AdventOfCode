@@ -1,10 +1,12 @@
 package advent2017;
 
 import advent2017.day03.SpiralMemory;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
+@Ignore
 public class SpiralMemoryTest {
 
     @Test
