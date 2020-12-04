@@ -1,6 +1,6 @@
 package advent2020;
 
-import advent2020.day04.TobogganTrajectory;
+import advent2020.day03.TobogganTrajectory;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

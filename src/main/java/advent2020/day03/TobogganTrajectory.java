@@ -1,4 +1,4 @@
-package advent2020.day04;
+package advent2020.day03;
 
 import org.apache.commons.lang3.StringUtils;
 
