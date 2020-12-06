@@ -61,42 +61,42 @@ public class BathroomSecurity {
     private String getCode(String[] inputs) {
         int x = 1;
         int y = 1;
-        System.out.println("Start on " + keypad[y][x]);
+//        System.out.println("Start on " + keypad[y][x]);
         StringBuilder sb = new StringBuilder();
         for (String input : inputs) {
-            System.out.println("Finding from " + x + ", " + y);
+//            System.out.println("Finding from " + x + ", " + y);
             for (char c : input.toCharArray()) {
                 switch (c) {
                     case 'U':
                         if (y > 0) {
                             y--;
-                            System.out.println("U to " + keypad[y][x]);
+//                            System.out.println("U to " + keypad[y][x]);
                         }
                         break;
                     case 'D':
                         if (y < 2) {
                             y++;
-                            System.out.println("D to " + keypad[y][x]);
+//                            System.out.println("D to " + keypad[y][x]);
                         }
                         break;
                     case 'L':
                         if (x > 0) {
                             x--;
-                            System.out.println("L to " + keypad[y][x]);
+//                            System.out.println("L to " + keypad[y][x]);
                         }
                         break;
                     case 'R':
                         if (x < 2) {
                             x++;
-                            System.out.println("R to " + keypad[y][x]);
+//                            System.out.println("R to " + keypad[y][x]);
                         }
                         break;
                 }
             }
-            System.out.println("-------------");
+//            System.out.println("-------------");
             sb.append(keypad[y][x]);
         }
-        System.out.println(sb.toString());
+//        System.out.println(sb.toString());
         return sb.toString();
     }
 
@@ -107,42 +107,42 @@ public class BathroomSecurity {
     private String getCodeV2(String[] inputs) {
         int x = 0;
         int y = 2;
-        System.out.println("Start on " + keypad2[y][x]);
+//        System.out.println("Start on " + keypad2[y][x]);
         StringBuilder sb = new StringBuilder();
         for (String input : inputs) {
-            System.out.println("Finding from " + x + ", " + y);
+//            System.out.println("Finding from " + x + ", " + y);
             for (char c : input.toCharArray()) {
                 switch (c) {
                     case 'U':
                         if (y > 0 && keypad2[y - 1][x] != '0') {
                             y--;
-                            System.out.println("U to " + keypad2[y][x]);
+//                            System.out.println("U to " + keypad2[y][x]);
                         }
                         break;
                     case 'D':
                         if (y < 4 && keypad2[y + 1][x] != '0') {
                             y++;
-                            System.out.println("D to " + keypad2[y][x]);
+//                            System.out.println("D to " + keypad2[y][x]);
                         }
                         break;
                     case 'L':
                         if (x > 0 && keypad2[y][x - 1] != '0') {
                             x--;
-                            System.out.println("L to " + keypad2[y][x]);
+//                            System.out.println("L to " + keypad2[y][x]);
                         }
                         break;
                     case 'R':
                         if (x < 4 && keypad2[y][x + 1] != '0') {
                             x++;
-                            System.out.println("R to " + keypad2[y][x]);
+//                            System.out.println("R to " + keypad2[y][x]);
                         }
                         break;
                 }
             }
-            System.out.println("-------------");
+//            System.out.println("-------------");
             sb.append(keypad2[y][x]);
         }
-        System.out.println(sb.toString());
+//        System.out.println(sb.toString());
         return sb.toString();
     }
 }
