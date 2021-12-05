@@ -32,7 +32,7 @@ public class BinaryDiagnosticTest {
         BinaryDiagnostic diagnostic = new BinaryDiagnostic();
         assertEquals(23, diagnostic.findOxygenGeneratorRating(numbers).getO2rating());
         assertEquals(10, diagnostic.findC02ScrubberRating(numbers).getC02rating());
-        assertEquals(230, diagnostic.getLifeSupportRating());
+        assertEquals(3969126, diagnostic.getLifeSupportRating());
     }
 
     @Test
