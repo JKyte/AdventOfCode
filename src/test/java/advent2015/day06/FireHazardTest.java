@@ -24,7 +24,7 @@ public class FireHazardTest {
     @Test
     public void partOne() throws FileNotFoundException {
         List<String> lines = readToList();
-        assertEquals(0, new FireHazard().createGrid(1000, 1000).processInstructions(lines).countLights());  //  542387 too low
+        assertEquals(543903, new FireHazard().createGrid(1000, 1000).processInstructions(lines).countLights());  //  542387 too low
     }
 
     private List<String> readToList() throws FileNotFoundException {

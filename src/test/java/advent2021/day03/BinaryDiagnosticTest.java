@@ -32,7 +32,7 @@ public class BinaryDiagnosticTest {
         BinaryDiagnostic diagnostic = new BinaryDiagnostic();
         assertEquals(23, diagnostic.findOxygenGeneratorRating(numbers).getO2rating());
         assertEquals(10, diagnostic.findC02ScrubberRating(numbers).getC02rating());
-        assertEquals(3969126, diagnostic.getLifeSupportRating());
+        assertEquals(230, diagnostic.getLifeSupportRating());
     }
 
     @Test
@@ -40,7 +40,7 @@ public class BinaryDiagnosticTest {
         List<String> numbers = readToList();
         BinaryDiagnostic diagnostic = new BinaryDiagnostic();
         diagnostic.findOxygenGeneratorRating(numbers).findC02ScrubberRating(numbers);
-        assertEquals(230, diagnostic.getLifeSupportRating());
+        assertEquals(3969126, diagnostic.getLifeSupportRating());
     }
 
     private List<String> readToList() throws FileNotFoundException {
