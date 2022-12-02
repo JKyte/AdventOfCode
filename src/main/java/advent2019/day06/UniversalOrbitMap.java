@@ -6,6 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -34,10 +35,10 @@ public class UniversalOrbitMap {
 
         String[] inputs = new String[0];
         ArrayList<String> tmp = new ArrayList<>();
-        Scanner scanner = new Scanner(new FileInputStream("src/main/resources/advent2019/InputDay6"));
-//        Scanner scanner = new Scanner(new FileInputStream("src/main/resources/advent2019/InputDay6Example2"));
-        while (scanner.hasNext()) {
-            tmp.add(scanner.nextLine());
+        try (Scanner scanner = new Scanner(new FileInputStream("src/main/resources/advent2019/InputDay6"))) {
+            while (scanner.hasNext()) {
+                tmp.add(scanner.nextLine());
+            }
         }
         inputs = tmp.toArray(inputs);
 

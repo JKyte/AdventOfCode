@@ -42,10 +42,11 @@ public class SonarSweepTest {
 
     private List<Integer> getProblemData() throws FileNotFoundException {
         List<Integer> depths = new ArrayList<>();
-        Scanner scanner = new Scanner(new File("src/main/resources/advent2021/SonarSweep.txt"));
-        while (scanner.hasNext()) {
-            String line = scanner.nextLine();
-            depths.add(Integer.parseInt(line));
+        try (Scanner scanner = new Scanner(new File("src/main/resources/advent2021/SonarSweep.txt"))) {
+            while (scanner.hasNext()) {
+                String line = scanner.nextLine();
+                depths.add(Integer.parseInt(line));
+            }
         }
         return depths;
     }

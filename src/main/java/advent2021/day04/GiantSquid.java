@@ -146,16 +146,13 @@ public class GiantSquid {
 
 
     public void loadFile(String path) {
-        try {
-            Scanner scanner = new Scanner(new File(path));
-
+        try (Scanner scanner = new Scanner(new File(path))) {
             String line = scanner.nextLine();
             this.numbers = lineToNumbers(line);
 
             while (scanner.hasNextLine()) {
                 readGameBoard(scanner);
             }
-
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }

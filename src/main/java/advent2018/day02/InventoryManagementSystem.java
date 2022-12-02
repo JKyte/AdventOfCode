@@ -34,8 +34,7 @@ public class InventoryManagementSystem implements Runnable {
 
     @Override
     public void run() {
-        try {
-            Scanner scanner = new Scanner(new File(inputPath));
+        try (Scanner scanner = new Scanner(new File(inputPath))) {
             String boxLabel;
             Map<Character, Integer> multimap;
             boolean isPair;
@@ -71,29 +70,29 @@ public class InventoryManagementSystem implements Runnable {
                 }
                 System.out.println(msg);
             }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
 
-            int checksum = twoCount * threeCount;
-            System.out.println("Checksum: " + checksum + " = " + twoCount + " * " + threeCount);
+        int checksum = twoCount * threeCount;
+        System.out.println("Checksum: " + checksum + " = " + twoCount + " * " + threeCount);
 
-            if (partTwo) {
-                for (int ii = 0; ii < keptLabels.size(); ii++) {
-                    String labelOne = keptLabels.get(ii);
-                    for (int jj = ii; jj < keptLabels.size(); jj++) {
-                        String labelTwo = keptLabels.get(jj);
-                        if (labelOne.equals(labelTwo)) {
-                            continue;
-                        }
-                        int deltaSize = labelDelta(labelOne, labelTwo);
-                        System.out.println(labelOne + " " + labelTwo + "  delta size: " + deltaSize + " " + labelOne.length());
-                        if (deltaSize == 1) {
-                            System.out.println("Common letters: " + labelUnion(labelOne, labelTwo));
-                            System.exit(0);
-                        }
+        if (partTwo) {
+            for (int ii = 0; ii < keptLabels.size(); ii++) {
+                String labelOne = keptLabels.get(ii);
+                for (int jj = ii; jj < keptLabels.size(); jj++) {
+                    String labelTwo = keptLabels.get(jj);
+                    if (labelOne.equals(labelTwo)) {
+                        continue;
+                    }
+                    int deltaSize = labelDelta(labelOne, labelTwo);
+                    System.out.println(labelOne + " " + labelTwo + "  delta size: " + deltaSize + " " + labelOne.length());
+                    if (deltaSize == 1) {
+                        System.out.println("Common letters: " + labelUnion(labelOne, labelTwo));
+                        System.exit(0);
                     }
                 }
             }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         }
     }
 

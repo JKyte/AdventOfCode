@@ -9,13 +9,14 @@ import java.util.Scanner;
 public class SonarSweep {
 
     public static void main(String[] args) throws FileNotFoundException {
-        Scanner scanner = new Scanner(new File("src/main/resources/advent2021/SonarSweep.txt"));
+        List<Integer> depths;
+        try (Scanner scanner = new Scanner(new File("src/main/resources/advent2021/SonarSweep.txt"))) {
+            depths = new ArrayList<>();
 
-        List<Integer> depths = new ArrayList<>();
-
-        while (scanner.hasNext()) {
-            String line = scanner.nextLine();
-            depths.add(Integer.parseInt(line));
+            while (scanner.hasNext()) {
+                String line = scanner.nextLine();
+                depths.add(Integer.parseInt(line));
+            }
         }
 
         SonarSweep sonarSweep = new SonarSweep();

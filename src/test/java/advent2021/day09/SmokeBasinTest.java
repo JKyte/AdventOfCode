@@ -42,9 +42,10 @@ public class SmokeBasinTest {
 
     private String[] readToArray(String path) throws FileNotFoundException {
         List<String> lines = new ArrayList<>();
-        Scanner scanner = new Scanner(new File(path));
-        while (scanner.hasNext()) {
-            lines.add(scanner.nextLine());
+        try (Scanner scanner = new Scanner(new File(path))) {
+            while (scanner.hasNext()) {
+                lines.add(scanner.nextLine());
+            }
         }
         return lines.toArray(new String[0]);
     }

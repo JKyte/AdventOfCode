@@ -41,9 +41,10 @@ public class DiveTest {
 
     private List<String> readCmds() throws FileNotFoundException {
         List<String> cmds = new ArrayList<>();
-        Scanner scanner = new Scanner(new File("src/main/resources/advent2021/Dive.txt"));
-        while (scanner.hasNext()) {
-            cmds.add(scanner.nextLine());
+        try (Scanner scanner = new Scanner(new File("src/main/resources/advent2021/Dive.txt"))) {
+            while (scanner.hasNext()) {
+                cmds.add(scanner.nextLine());
+            }
         }
         return cmds;
     }

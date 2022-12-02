@@ -80,9 +80,10 @@ It contains a pair of any two letters that appears at least twice in the string 
 
     private List<String> readLines() throws FileNotFoundException {
         List<String> lines = new ArrayList<>();
-        Scanner scanner = new Scanner(new File("src/main/resources/advent2015/NaughtyOrNice.txt"));
-        while (scanner.hasNext()) {
-            lines.add(scanner.nextLine());
+        try (Scanner scanner = new Scanner(new File("src/main/resources/advent2015/NaughtyOrNice.txt"))) {
+            while (scanner.hasNext()) {
+                lines.add(scanner.nextLine());
+            }
         }
         return lines;
     }

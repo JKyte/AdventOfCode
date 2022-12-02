@@ -45,9 +45,10 @@ public class BinaryDiagnosticTest {
 
     private List<String> readToList() throws FileNotFoundException {
         List<String> lines = new ArrayList<>();
-        Scanner scanner = new Scanner(new File("src/main/resources/advent2021/BinaryDiagnostic.txt"));
-        while (scanner.hasNext()) {
-            lines.add(scanner.nextLine());
+        try (Scanner scanner = new Scanner(new File("src/main/resources/advent2021/BinaryDiagnostic.txt"))) {
+            while (scanner.hasNext()) {
+                lines.add(scanner.nextLine());
+            }
         }
         return lines;
     }
