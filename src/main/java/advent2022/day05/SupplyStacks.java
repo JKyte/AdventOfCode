@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
+import static core.Constants.SPACE;
+
 public class SupplyStacks {
 
     private boolean partTwo = false;
@@ -36,7 +38,7 @@ public class SupplyStacks {
     private void createStacks(String stackLine) {
         stackLine = stackLine.substring(1);
         stackLine = stackLine.replace("   ", " ");
-        String[] parts = stackLine.split(" ");
+        String[] parts = stackLine.split(SPACE);
         stacks = new ArrayList<>();
         for (int i = 0; i < parts.length; i++) {
             stacks.add(new Stack<>());
@@ -69,7 +71,7 @@ public class SupplyStacks {
     private void processMoves(List<String> inputs, int start) {
         for (int i = start; i < inputs.size(); i++) {
             String input = inputs.get(i);
-            String[] parts = input.split(" ");
+            String[] parts = input.split(SPACE);
             int a = Integer.parseInt(parts[1]);
             int b = Integer.parseInt(parts[3]);
             int c = Integer.parseInt(parts[5]);

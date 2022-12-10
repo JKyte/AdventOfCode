@@ -2,6 +2,8 @@ package advent2022.day02;
 
 import java.util.List;
 
+import static core.Constants.SPACE;
+
 public class RockPaperScissors {
 
     public RockPaperScissors() {
@@ -26,7 +28,7 @@ public class RockPaperScissors {
 
     private int processRound(String round) {
         int roundScore = 0;
-        String[] parts = round.split(" ");
+        String[] parts = round.split(SPACE);
         switch (parts[1]) {
             case "X":   //  Rock
                 roundScore += 1;
@@ -63,7 +65,7 @@ public class RockPaperScissors {
 
     private int partTwo(String round) {
         int roundScore = 0;
-        String[] parts = round.split(" ");
+        String[] parts = round.split(SPACE);
         switch (parts[1]) {
             case "X":   //  need to lose
                 roundScore += scoreLossGiven(parts[0]);

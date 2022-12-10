@@ -2,6 +2,9 @@ package advent2022.day04;
 
 import java.util.List;
 
+import static core.Constants.COMMA_CHAR;
+import static core.Constants.DASH_CHAR;
+
 public class CampCleanup {
 
     public CampCleanup() {
@@ -21,15 +24,15 @@ public class CampCleanup {
     }
 
     private int countFullOverlap(String pair, boolean anyOverlap) {
-        int index = pair.indexOf(',');
+        int index = pair.indexOf(COMMA_CHAR);
         String left = pair.substring(0, index);
         String right = pair.substring(index + 1);
 
-        index = left.indexOf('-');
+        index = left.indexOf(DASH_CHAR);
         int x1 = Integer.parseInt(left.substring(0, index));
         int y1 = Integer.parseInt(left.substring(index + 1));
 
-        index = right.indexOf('-');
+        index = right.indexOf(DASH_CHAR);
         int x2 = Integer.parseInt(right.substring(0, index));
         int y2 = Integer.parseInt(right.substring(index + 1));
 

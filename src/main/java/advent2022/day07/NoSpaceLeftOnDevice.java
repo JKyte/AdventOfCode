@@ -11,20 +11,16 @@ import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+import static core.Constants.CD;
+import static core.Constants.DIR;
+import static core.Constants.DOLLAR_SIGN;
+import static core.Constants.DOTS;
+import static core.Constants.LS;
+import static core.Constants.SLASH;
+import static core.Constants.SLASH_CHAR;
+import static core.Constants.SPACE;
+
 public class NoSpaceLeftOnDevice {
-
-    //  cmds
-    private static final String CD = "cd";
-    private static final String LS = "ls";
-
-    //  other constants
-    private static final String DOTS = "..";
-    private static final String SLASH = "/";
-    private static final String SPACE = " ";
-    private static final String DOLLAR_SIGN = "$";
-    private static final String DIR = "dir";
-
-    private static final char SLASH_CHAR = '/';
 
     private List<String> lines;
     private final Deque<String> dirs;
