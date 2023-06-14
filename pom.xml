@@ -11,7 +11,7 @@
     <maven.compiler.target>1.8</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <version.apache-commons-lang3>3.12.0</version.apache-commons-lang3>
-    <version.guava>31.1-jre</version.guava>
+    <version.guava>32.0.0-jre</version.guava>
     <version.junit>4.13.2</version.junit>
     <version.maven-compiler-plugin>3.10.1</version.maven-compiler-plugin>
     <version.sortpom-maven-plugin>3.0.0</version.sortpom-maven-plugin>
